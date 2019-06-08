@@ -1,0 +1,49 @@
+: even 2 % not ; ( a -- iseven )
+
+: sqr dup * ; ( a -- a*a )
+: dup2 swap dup rot dup rot swap ; ( a b -- a b a b )
+: prime ( a -- isprime )
+dup 1 > if
+    dup 2 = not if
+        dup even not if
+        1
+            repeat
+            2 +
+            dup2 dup2 sqr >=
+            -rot
+            %
+            land not
+            until
+        sqr <
+        else drop 0 then
+    else drop 1 then
+else drop 0 then ;
+
+: cellallot ( a -- addr )
+    8 allot dup -rot ! ;
+
+: concat ( addr1 addr2 -- addr3) ( concat addr2 + addr1 )
+    dup count >r
+    swap dup count
+    r@ 1 + +
+    heap-alloc
+    r> swap dup >r
+    swap >r
+    rot dup2
+    string-copy
+    drop
+    r> +
+    swap
+    string-copy
+    r> ;
+
+: collatz ( number -- setofnumbers 1)
+    repeat
+    dup dup 2 % if
+        3 * 1 +
+    else
+        2 /
+    then
+    dup 1 =
+    until ;
+    
